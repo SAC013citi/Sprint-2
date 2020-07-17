@@ -16,3 +16,135 @@ bin-release/
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+Login and register with mysql 
+Project Source Code:
+
+------------ Create A Class “MyConnection” To Connect Our Forms With Database
+Import java.sql.Connection;
+Import java.sql.DriverManager;
+/**
+ *
+ * @author 1BestCsharp
+ */
+Public class MyConnection {
+    // create a function to connect with mysql database
+      Public static Connection getConnection(){
+        Connection con = null;
+        Try {
+            Class.forName(“com.mysql.jdbc.Driver”);
+            Con = DriverManager.getConnection(“jdbc:mysql://localhost/java_login_register”, “root”, “”);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }Return con;
+    }
+}    
+------------ On The Register Form ------------
+// function to check if the username already exist in database table
+    Public boolean checkUsername(String username){
+        PreparedStatement ps;
+        ResultSet rs;
+        Boolean checkUser = false;
+        String query = “SELECT * FROM `the_app_users` WHERE `u_uname` =?”;
+        Try {
+            Ps = MyConnection.getConnection().prepareStatement(query);
+            Ps.setString(1, username);
+            Rs = ps.executeQuery();
+            If(rs.next()){
+                checkUser = true;}
+        } catch (SQLException ex) {
+            Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         Return checkUser;
+    }
+// on the register button click
+Private void jButton_Register_ActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+        String fname = jTextField_FN.getText();
+        String lname = jTextField_LN.getText();
+        String uname = jTextField_UN.getText();
+        String pass = String.valueOf(jPasswordField_PASS.getPassword());
+        String re_pass = String.valueOf(jPasswordField_REPASS.getPassword());
+        String bdate = null;
+        String address = jTextArea_ADDRESS.getText();
+        If(uname.equals(“”)){
+            JOptionPane.showMessageDialog(null, “Add A Username”);
+        }
+        Else if(pass.equals(“”)){
+            JOptionPane.showMessageDialog(null, “Add A Password”);
+        }
+        Else if(!pass.equals(re_pass)){
+            JOptionPane.showMessageDialog(null, “Retype The Password Again”);
+        }
+        
+        Else if(checkUsername(uname)){
+            JOptionPane.showMessageDialog(null, “This Username Already Exist”);
+        }
+        Else{
+        If(jDateChooser_BDATE.getDate() != null)
+        {
+            SimpleDateFormat dateformat = new SimpleDateFormat(“yyyy-MM-dd”);
+            Bdate = dateformat.format(jDateChooser_BDATE.getDate());
+        }
+        PreparedStatement ps;
+        String query = “INSERT INTO `the_app_users`(`u_fname`, `u_lname`, `u_uname`, `u_pass`, `u_bdate`, `u_address`) VALUES (?,?,?,?,?,?)”;
+        Try {
+            Ps = MyConnection.getConnection().prepareStatement(query);
+            Ps.setString(1, fname);
+            Ps.setString(2, lname);
+            Ps.setString(3, uname);
+            Ps.setString(4, pass);
+            If(bdate != null){
+             Ps.setString(5, bdate);
+            }else{
+                Ps.setNull(5, 0);
+            }
+            Ps.setString(6, address);
+            If(ps.executeUpdate() > 0)
+            {
+                JOptionPane.showMessageDialog(null, “New User Add”);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+    }                                                 
+------------ On The Login Form ------------
+// on the login button click
+Private void jButton_LOGINActionPerformed(java.awt.event.ActionEvent evt) {                                 
+        PreparedStatement ps;
+        ResultSet rs;
+        String uname = jTextField1.getText();
+        String pass = String.valueOf(jPasswordField1.getPassword());
+        String query = “SELECT * FROM `the_app_users` WHERE `u_uname` =? AND `u_pass` =?”;
+        Try {
+            Ps = MyConnection.getConnection().prepareStatement(query);
+            Ps.setString(1, uname);
+            Ps.setString(2, pass);
+            Rs = ps.executeQuery();
+            If(rs.next()){
+                    HOME_JFrame mf = new HOME_JFrame();
+                    Mf.setVisible(true);
+                    Mf.pack();
+                    Mf.setLocationRelativeTo(null);
+                    Mf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    Mf.jLabel1.setText(“Welcome < “+uname+” >”);
+                    This.dispose();
+            }
+            Else{
+                    JOptionPane.showMessageDialog(null, “Incorrect Username Or Password”, “Login Failed”, 2);
+}
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }                                         
+
+The combox:cide added to the school management system
+String[] subjectStrings = { “English”, “Afrikaans”, “Mathematics Lit”, “Mathematics”,  “life skills”, “Arts”, “Economics management and sciences", “technology”, "Natural Science"};
+//Create the combo box, select item at index 9.
+//Indices start at 0, so 9 specifies the subject.
+JComboBox subjectStrings = new JComboBox(subjectStrings);
+subjectStrings.setSelectedIndex(9);
+subjectStrings.addActionListener(this);
+
+CREATE TABLE Persons2( “English” , “Afrikaans”, “Mathematics Lit”, “Mathematics”,  “life skills”, “Arts”, “Economics management and sciences”, “technology”, “Natural Science”) 
+
+
